@@ -10,7 +10,7 @@ This module contains some common helpful functions.
 """
 from __future__ import absolute_import
 
-import urllib
+import six.moves.urllib as urllib
 
 try:
     import cPickle as pickle
@@ -39,7 +39,7 @@ def kodi_url(url, **options):
     Returns:
         str:
     """
-    options = urllib.urlencode(options)
+    options = urllib.parse.urlencode(options)
     if options:
         return url + '|' + options
     return url
@@ -141,7 +141,7 @@ def download_page(url, data=None):
     Returns:
         str: The results of requesting the URL.
     """
-    conn = urllib.urlopen(url, data)
+    conn = urllib.request.urlopen(url, data)
     resp = conn.read()
     conn.close()
     return resp

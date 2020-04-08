@@ -24,6 +24,7 @@ import re
 import struct
 import sys
 import textwrap
+import six
 
 try:
     import io
@@ -220,8 +221,7 @@ def detect_encoding(file, binary_mode=False):
             if match:
                 f.close()
                 enc = match.group(1).strip()
-                if not isinstance(enc, text_type):
-                    enc = enc.decode('utf-8')
+				enc = six.ensure_text(enc)
                 if charset_exists(enc):
                     return enc
         f.close()
@@ -428,8 +428,8 @@ class _BaseFile(list):
             fhandle = open(fpath, 'wb')
         else:
             fhandle = io.open(fpath, 'w', encoding=self.encoding)
-            if not isinstance(contents, text_type):
-                contents = contents.decode(self.encoding)
+            #if not isinstance(contents, six.text_type):
+            contents = six.ensure_text(contents, encoding=self.encoding)
         fhandle.write(contents)
         fhandle.close()
         # set the file path if not set
@@ -618,8 +618,9 @@ class POFile(_BaseFile):
             else:
                 ret += '# %s\n' % header
 
-        if not isinstance(ret, text_type):
-            ret = ret.decode(self.encoding)
+        #if not isinstance(ret, text_type):
+        #    ret = ret.decode(self.encoding)
+		ret = six.u(ret)
 
         return ret + _BaseFile.__unicode__(self)
 
@@ -1683,8 +1684,8 @@ class _MOFileParser(object):
                     tokens = line.split(b(':'), 1)
                     if tokens[0] != b(''):
                         try:
-                            k = tokens[0].decode(encoding)
-                            v = tokens[1].decode(encoding)
+                            k = six.ensure_text(tokens[0], encoding=encoding)
+                            v = six.ensure_text(tokens[1], encoding=encoding)
                             metadata[k] = v.strip()
                         except IndexError:
                             metadata[k] = u('')

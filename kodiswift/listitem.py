@@ -12,6 +12,7 @@ for xbmcgui.ListItem.
 from __future__ import absolute_import
 
 import warnings
+import six
 
 from kodiswift import xbmcgui
 
@@ -266,6 +267,10 @@ class ListItem(object):
         """Adds stream details"""
         return self._listitem.addStreamInfo(stream_type, stream_values)
 
+    def set_subtitles(self, subtitlelist):
+        """Sets the listitem's subtitle"""
+        return self._listitem.setSubtitles(subtitlelist)
+
     def as_tuple(self):
         """Returns a tuple of list item properties:
             (path, the wrapped xbmcgui.ListItem, is_folder)
@@ -281,7 +286,7 @@ class ListItem(object):
                   path=None, selected=None, info=None, properties=None,
                   context_menu=None, replace_context_menu=False,
                   is_playable=None, info_type='video', stream_info=None,
-                  **kwargs):
+				  setsubtitles=None, **kwargs):
         """A ListItem constructor for setting a lot of properties not
         available in the regular __init__ method. Useful to collect all
         the properties in a dict and then use the **dct to call this
@@ -321,6 +326,9 @@ class ListItem(object):
         if context_menu:
             listitem.add_context_menu_items(context_menu, replace_context_menu)
 
+        if setsubtitles!=[] and setsubtitles!='' and setsubtitles is not None:
+            listitem.set_subtitles(setsubtitles)
+
         return listitem
 
     def __eq__(self, other):
@@ -333,7 +341,7 @@ class ListItem(object):
         return self_props == other_props
 
     def __str__(self):
-        return ('%s (%s)' % (self.label, self.path)).encode('utf-8')
+        return six.ensure_str(('%s (%s)' % (self.label, self.path)), encoding='utf-8')
 
     def __repr__(self):
-        return ("<ListItem '%s'>" % self.label).encode('utf-8')
+        return six.ensure_str(("<ListItem '%s'>" % self.label), encoding='utf-8')

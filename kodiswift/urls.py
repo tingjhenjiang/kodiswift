@@ -11,7 +11,8 @@ This module contains URLRule class for dealing with url patterns.
 from __future__ import absolute_import
 
 import re
-from urllib import urlencode, unquote_plus, quote_plus
+import six.moves.urllib as urllib
+#from urllib import urlencode, unquote_plus, quote_plus
 
 from kodiswift.common import pickle_dict, unpickle_dict
 
@@ -104,7 +105,7 @@ class UrlRule(object):
             raise NotFoundException
 
         # urlunencode the values
-        items = dict((key, unquote_plus(val))
+        items = dict((key, urllib.parse.unquote_plus(val))
                      for key, val in m.groupdict().items())
 
         # unpickle any items if present
@@ -125,7 +126,7 @@ class UrlRule(object):
             if not isinstance(val, basestring):
                 raise TypeError('Value "%s" for key "%s" must be an instance'
                                 ' of basestring' % (val, key))
-            items[key] = quote_plus(val)
+            items[key] = urllib.parse.quote_plus(val)
 
         try:
             path = self._url_format.format(**items)
@@ -141,7 +142,7 @@ class UrlRule(object):
         and values in the provided items will be urlencoded. If necessary, any
         python objects will be pickled before being urlencoded.
         """
-        return urlencode(pickle_dict(items))
+        return urllib.parse.urlencode(pickle_dict(items))
 
     def make_path_qs(self, items):
         """Returns a relative path complete with query string for the given

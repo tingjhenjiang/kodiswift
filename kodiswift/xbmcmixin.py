@@ -11,6 +11,7 @@ from kodiswift import xbmc, xbmcplugin, xbmcgui
 from kodiswift.constants import SortMethod
 from kodiswift.logger import log
 from kodiswift.storage import TimedStorage, UnknownFormat
+import six
 
 __all__ = ['XBMCMixin']
 
@@ -216,7 +217,7 @@ class XBMCMixin(object):
         if converter is str:
             return value
         elif converter is unicode:
-            return value.decode('utf-8')
+            return six.ensure_text(value, encoding='utf-8')
         elif converter is bool:
             return value == 'true'
         elif converter is int:
