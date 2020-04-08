@@ -12,7 +12,6 @@ from __future__ import absolute_import
 
 import re
 import six.moves.urllib as urllib
-#from urllib import urlencode, unquote_plus, quote_plus
 
 from kodiswift.common import pickle_dict, unpickle_dict
 

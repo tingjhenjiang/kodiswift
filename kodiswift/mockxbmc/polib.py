@@ -428,7 +428,6 @@ class _BaseFile(list):
             fhandle = open(fpath, 'wb')
         else:
             fhandle = io.open(fpath, 'w', encoding=self.encoding)
-            #if not isinstance(contents, six.text_type):
             contents = six.ensure_text(contents, encoding=self.encoding)
         fhandle.write(contents)
         fhandle.close()
@@ -618,9 +617,7 @@ class POFile(_BaseFile):
             else:
                 ret += '# %s\n' % header
 
-        #if not isinstance(ret, text_type):
-        #    ret = ret.decode(self.encoding)
-		ret = six.u(ret)
+		ret = six.ensure_text(ret)
 
         return ret + _BaseFile.__unicode__(self)
 
